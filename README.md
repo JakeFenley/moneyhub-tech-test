@@ -1,3 +1,26 @@
+# Tech Test Details
+
+In my tech test you will find that I have updated the `/holdings` endpoint in the `admin` service, as well as adding code in the `investments` service to create csv files with the data received.
+
+In my `/services` dir in `admin` i have created `financial-companies-client` and `investments-client` which are basically abstractions of the external service API requests needed to get the data for the CSV. 
+
+In addition to that you will find `generate-holdings-csv` which handles the logic required for combining the data from both external services and returning the csv string.
+
+The route handler uses the data received that `generate-holdings-csv` and sends it off to the `investments` service `/investments/export` endpoint which then creates a csv file and returns a 204 status code.
+
+
+# Testing
+
+I've used jest here to do unit testing on `generate-holdings-csv` with a set of mocks and fixtures.  
+
+To run the tests: 
+
+```bash
+cd admin
+jest
+```
+
+
 # Moneyhub Tech Test - Investments and Holdings
 
 At Moneyhub we use microservices to partition and separate the concerns of the codebase. In this exercise we have given you an example `admin` service and some accompanying services to work with. In this case the admin service backs a front end admin tool allowing non-technical staff to interact with data.
