@@ -3,6 +3,12 @@ const bodyParser = require("body-parser")
 const config = require("config")
 const investments = require("./data")
 const R = require("ramda")
+const path = require("path")
+const {promisify} = require("util")
+const fs = require("fs")
+const mkdir = promisify(fs.mkdir)
+const exists = promisify(fs.exists)
+const writeFile = promisify(fs.writeFile)
 
 const app = express()
 
@@ -18,9 +24,28 @@ app.get("/investments/:id", (req, res) => {
   res.send(investment)
 })
 
-app.post("/investments/export", (req, res) => {
+app.post("/investments/export", async (req, res) => {
   console.log("Body received", req.body)
-  res.sendStatus(204)
+
+  try {
+    const dirExists = await exists(path.join(__dirname, "/files"))
+
+    if (!dirExists) {
+      await mkdir(path.join(__dirname, "/files"))
+    }
+
+    await writeFile(
+      path.join(
+        __dirname,
+        `/files/${new Date().toISOString().replace(/[:T.]/g, "-")}.csv`,
+      ),
+      req.body.data,
+    )
+    res.sendStatus(204)
+  } catch (err) {
+    console.error(err)
+    res.sendStatus(500)
+  }
 })
 
 app.listen(config.port, (err) => {
