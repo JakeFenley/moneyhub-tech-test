@@ -2,7 +2,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const config = require("config")
 const got = require("got")
-const generateHoldingsCsvData = require("./services/generate-holdings-csv")
+const {generateHoldingsCsvData} = require("./services/generate-holdings-csv")
 const initFinancialCompaniesClient = require("./services/financial-companies-client")
 const initInvestmentsClient = require("./services/investments-client")
 
@@ -51,3 +51,5 @@ app.listen(config.port, (err) => {
   }
   console.log(`Server running on port ${config.port}`)
 })
+
+module.exports = app

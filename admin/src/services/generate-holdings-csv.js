@@ -9,22 +9,14 @@ const fromArrayToCsvString = (data) => {
   return csvString
 }
 
-const generateHoldingsCsvData = async (
-  financialCompaniesClient,
-  investmentsClient,
-) => {
-  const [investments, companiesData] = await Promise.all([
-    investmentsClient.getInvestments(),
-    financialCompaniesClient.getCompanies(),
-  ])
-
+const getHoldings = (investmentsData, companiesData) => {
   const companies = companiesData.reduce((acc, company) => {
     acc[company.id] = company.name
 
     return acc
   }, {})
 
-  const holdings = investments.reduce((acc, investment) => {
+  const holdings = investmentsData.reduce((acc, investment) => {
     investment.holdings.forEach((holding) => {
       acc.push({
         User: investment.userId,
@@ -39,7 +31,21 @@ const generateHoldingsCsvData = async (
     return acc
   }, [])
 
+  return holdings
+}
+
+const generateHoldingsCsvData = async (
+  financialCompaniesClient,
+  investmentsClient,
+) => {
+  const [investments, companies] = await Promise.all([
+    investmentsClient.getInvestments(),
+    financialCompaniesClient.getCompanies(),
+  ])
+
+  const holdings = getHoldings(investments, companies)
+
   return fromArrayToCsvString(holdings)
 }
 
-module.exports = generateHoldingsCsvData
+module.exports = {generateHoldingsCsvData, getHoldings}

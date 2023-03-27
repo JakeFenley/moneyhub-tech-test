@@ -13,18 +13,6 @@ const investmentsFixture = [
     userId: "2",
     firstName: "Sheila",
     lastName: "Aussie",
-    investmentTotal: 22000,
-    date: "2020-02-01",
-    holdings: [
-      {id: "1", investmentPercentage: 0.5},
-      {id: "2", investmentPercentage: 0.5},
-    ],
-  },
-  {
-    id: "3",
-    userId: "2",
-    firstName: "Sheila",
-    lastName: "Aussie",
     investmentTotal: 21500,
     date: "2020-03-01",
     holdings: [
@@ -34,7 +22,7 @@ const investmentsFixture = [
     ],
   },
   {
-    id: "4",
+    id: "3",
     userId: "3",
     firstName: "John",
     lastName: "Smith",
