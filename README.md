@@ -6,7 +6,7 @@ In my `/services` dir in `admin` i have created `financial-companies-client` and
 
 In addition to that you will find `generate-holdings-csv` which handles the logic required for combining the data from both external services and returning the csv string.
 
-The route handler uses the data received that `generate-holdings-csv` and sends it off to the `investments` service `/investments/export` endpoint which then creates a csv file and returns a 204 status code.
+The route handler in `admin` `/holdings` uses the data received that `generate-holdings-csv` and sends it off to the `investments` service `/investments/export` endpoint which then creates a csv file and returns a 204 status code.
 
 
 # Testing
