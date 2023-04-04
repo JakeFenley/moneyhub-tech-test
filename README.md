@@ -20,6 +20,25 @@ cd admin
 jest
 ```
 
+## 1. How might you make this service more secure?
+- For TLS and rate limiting we could have a reverse proxy (HAProxy, nginx, etc..) sitting in front of all of the services, handling all requests with HTTPS. After that point we could terminate TLS to gain a performance boost as long as none of the services are configured to recieve any traffic from anything other than the scope of their local environment. Otherwise if we need HTTPS on the microservices themselves we can generate certificates for each service and configure the express app to use them.
+- For Authentication/Authorization we could have a gateway API which receives all incoming requests from the reverse proxy and forwards all authorised requests to the relevant services. We could choose to implement the role based permissions at this layer and fail any requests to `admin` where a user is not an admin level role for example, or simply forward an authorised request and allow the services to handle role based permissions themselves.
+- Use `SameSite`, `HttpOnly`, and `Secure` for our long lived auth token cookies.
+- Handle CSRF protection logic in the previously mentioned auth gateway. 
+- Implement a CORS policy so that only authorised domains can submit requests to our app.
+
+##  2. How would you make this solution scale to millions of records?
+- Implement pagination using cursors based on the `date` column.
+- Assuming there will be filtering on these endpoints I would index `userId`, `date`, `firstName`, and `lastName`. I would also normalise `holdings` and then index and change `id` to `companyId` to allow for filtering based on companies as well.
+- With pagination implemented I would then run `n` queries to get `n` pages, rather than requesting all the data at once. This helps to keep the db from locking up, especially if records trying to be read are locked during an ACID transaction.
+
+##  3. What else would you have liked to improve given more time?
+- I would consider if `investments` needs to be creating the CSV here and consider moving that logic into `admin`.
+- Rather than saving a CSV file to the file system as I have in `investments`, I would like to use a writestream and send the file in the http response.
+- I would add logging across the services and create detailed error classes/messages at all points of failure.
+- I would deploy a low level environment for integration and e2e tests using live services.
+- In `investments` we have our incoming json payload size limit set to 10mb. 10mb is probably something like 50k records so anything above that will fail. The options would be to either increase the size limit, or use websockets to stream the data from `admin` to `investments` for csv creation.
+
 
 # Moneyhub Tech Test - Investments and Holdings
 
